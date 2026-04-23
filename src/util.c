@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-static const char FILE_NAMES[3][9] = {"1024.pgm", "2048.pgm", "4096.pgm"};
-static const int RADII[5] = {3, 5, 7, 9, 11};
+const char INPUTS[3][9] = {"1024.pgm", "2048.pgm", "4096.pgm"};
+const int RADII[5] = {3, 5, 7, 9, 11};
 
 typedef struct {
     int width;
@@ -26,9 +26,10 @@ PGMImage *read_pgm(const char *filename) {
 
     fscanf(file, "%d %d", &img->width, &img->height);
 
-    // Consume "255" line
+    // Consume "255" and newline
     char max_val[4];
     fscanf(file, "%s", max_val);
+    fgetc(file);
 
     const size_t num_pixels = img->width * img->height;
     img->data = malloc(num_pixels);
@@ -36,6 +37,14 @@ PGMImage *read_pgm(const char *filename) {
 
     fclose(file);
     return img;
+}
+
+PGMImage *copy_pgm(const PGMImage *src) {
+    PGMImage *copy = malloc(sizeof(PGMImage));
+    copy->width = src->width;
+    copy->height = src->height;
+    copy->data = malloc(src->width * src->height);
+    return copy;
 }
 
 void write_pgm(const char *filename, const PGMImage *img) {
@@ -55,7 +64,7 @@ void free_pgm(PGMImage *img) {
     free(img);
 }
 
-float *create_kernel(const int radius) {
+float *create_2d_kernel(const int radius) {
     const float blur = (float) radius / 3.0f;
     const int size = 2 * radius + 1;
 
@@ -71,6 +80,30 @@ float *create_kernel(const int radius) {
     }
 
     // Normalize so kernel weights sum to 1
-    for (int i = 0; i < size * size; i++) kernel[i] /= sum;
+    for (int i = 0; i < size * size; i++) {
+        kernel[i] /= sum;
+    }
+
     return kernel;
 }
+
+float *create_1d_kernel(const int radius) {
+    const float blur = (float) radius / 3.0f;
+    const int size = 2 * radius + 1;
+
+    float *kernel = malloc(size * sizeof(float));
+    float sum = 0.0f;
+
+    for (int i = -radius; i <= radius; i++) {
+        const float val = expf((float) -(i * i) / (2.0f * blur * blur));
+        kernel[i + radius] = val;
+        sum += val;
+    }
+
+    for (int i = 0; i < size; i++) {
+        kernel[i] /= sum;
+    }
+
+    return kernel;
+}
+
