@@ -1,5 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+
+static const char FILE_NAMES[3][9] = {"1024.pgm", "2048.pgm", "4096.pgm"};
+static const int RADII[5] = {3, 5, 7, 9, 11};
 
 typedef struct {
     int width;
@@ -49,4 +53,24 @@ void write_pgm(const char *filename, const PGMImage *img) {
 void free_pgm(PGMImage *img) {
     free(img->data);
     free(img);
+}
+
+float *create_kernel(const int radius) {
+    const float blur = (float) radius / 3.0f;
+    const int size = 2 * radius + 1;
+
+    float *kernel = malloc(size * size * sizeof(float));
+    float sum = 0.0f;
+
+    for (int i = -radius; i <= radius; i++) {
+        for (int j = -radius; j <= radius; j++) {
+            const float val = expf((float) -(j * j + i * i) / (2.0f * blur * blur));
+            kernel[(i + radius) * size + (j + radius)] = val;
+            sum += val;
+        }
+    }
+
+    // Normalize so kernel weights sum to 1
+    for (int i = 0; i < size * size; i++) kernel[i] /= sum;
+    return kernel;
 }

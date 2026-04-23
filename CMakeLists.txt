@@ -11,8 +11,6 @@ set(CMAKE_CUDA_COMPILER /opt/cuda/bin/nvcc)
 set(CMAKE_CUDA_STANDARD 17)
 
 add_executable(project
-        src/pgm.c
-        src/pgm.h
-        src/kernels.c
-        src/kernels.h
+        src/util.c
+        src/util.h
 )
