@@ -13,8 +13,8 @@ int main() {
             const int radius = RADII[j];
             float *kernel = create_2d_kernel(radius);
 
-            for (int x = 0; x < input->width; x++) {
-                for (int y = 0; y < input->height; y++) {
+            for (int y = 0; y < input->height; y++) {
+                for (int x = 0; x < input->width; x++) {
                     float sum = 0.0f;
 
                     for (int ky = -radius; ky <= radius; ky++) {
