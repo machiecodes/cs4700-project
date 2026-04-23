@@ -6,13 +6,12 @@ int main() {
     for (int i = 0; i < 3; i++) {
         char input_file_name[64];
         sprintf(input_file_name, "src/images/input/%s", INPUTS[i]);
+        PGMImage *input = read_pgm(input_file_name);
+        PGMImage *output = copy_pgm(input);
 
         for (int j = 0; j < 5; j++) {
             const int radius = RADII[j];
             float *kernel = create_2d_kernel(radius);
-
-            PGMImage *input = read_pgm(input_file_name);
-            PGMImage *output = copy_pgm(input);
 
             for (int x = 0; x < input->width; x++) {
                 for (int y = 0; y < input->height; y++) {
@@ -45,8 +44,9 @@ int main() {
             write_pgm(output_file_name, output);
 
             free(kernel);
-            free_pgm(input);
-            free_pgm(output);
         }
+
+        free_pgm(input);
+        free_pgm(output);
     }
 }
