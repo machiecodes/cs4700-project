@@ -28,18 +28,14 @@ __global__ void gaussian_blur_2d(
     const int out_x = BLOCK_SIZE * static_cast<int>(blockIdx.x) + static_cast<int>(threadIdx.x);
     const int out_y = BLOCK_SIZE * static_cast<int>(blockIdx.y) + static_cast<int>(threadIdx.y);
 
-    // Top-left corner of this block's tile in global image coordinates
     const int tile_origin_x = BLOCK_SIZE * static_cast<int>(blockIdx.x) - radius;
     const int tile_origin_y = BLOCK_SIZE * static_cast<int>(blockIdx.y) - radius;
 
-    // Cooperatively load the tile into shared memory.
-    // The tile is larger than the block, so each thread may load more than one element.
     for (int i = static_cast<int>(threadIdx.y); i < tile_size; i += BLOCK_SIZE) {
         for (int j = static_cast<int>(threadIdx.x); j < tile_size; j += BLOCK_SIZE) {
             int src_x = tile_origin_x + j;
             int src_y = tile_origin_y + i;
 
-            // Clamp to image bounds (same border handling as CPU)
             src_x = max(0, min(src_x, width - 1));
             src_y = max(0, min(src_y, height - 1));
 
@@ -49,7 +45,6 @@ __global__ void gaussian_blur_2d(
 
     __syncthreads();
 
-    // Now compute the output pixel, reading from shared memory
     if (out_x >= width || out_y >= height) return;
 
     float sum = 0.0f;
