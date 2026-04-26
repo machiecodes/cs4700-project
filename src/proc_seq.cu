@@ -101,6 +101,9 @@ int main() {
         memcpy(h_input, input->data, image_size);
 
         unsigned char *d_input, *d_output;
+
+        // converting to unsigned char after the horizontal pass would introduce
+        // rounding before vertical weights are applied
         float *d_intermediate;
         CHECK_CUDA(cudaMalloc(&d_input, image_size));
         CHECK_CUDA(cudaMalloc(&d_output, image_size));
@@ -134,7 +137,7 @@ int main() {
             cudaEventCreate(&start);
             cudaEventCreate(&stop);
 
-            // First iteration is just to warm up kernels
+            // The first iteration is just to warm up kernels
             for (int i = 0; i < 6; i++) {
                 cudaEventRecord(start);
 
