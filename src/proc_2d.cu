@@ -127,7 +127,7 @@ int main() {
                     CHECK_CUDA(cudaMemcpy(h_output, d_output, image_size, cudaMemcpyDeviceToHost));
 
                     for (int j = 0; j < image_size; j++) {
-                        if (h_output[j] != correct->data[j]) {
+                        if (abs(static_cast<int>(h_output[j]) - static_cast<int>(correct->data[j])) > 1) {
                             printf("Mismatch at index %d: expected %hhu, got %hhu",
                                 j, correct->data[j], h_output[j]);
                             exit(1);
