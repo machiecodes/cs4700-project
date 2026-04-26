@@ -3,6 +3,10 @@
 #define NUM_FILES 3
 #define NUM_RADII 5
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern const char INPUTS[3][9];
 extern const int RADII[5];
 
@@ -19,3 +23,7 @@ void free_pgm(PGMImage *img);
 
 float *create_2d_kernel(int radius);
 float *create_1d_kernel(int radius);
+
+#ifdef __cplusplus
+}
+#endif
