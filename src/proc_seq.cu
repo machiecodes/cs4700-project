@@ -86,7 +86,6 @@ __global__ void gaussian_blur_v(
 
 int main() {
     FILE *csv = fopen("results.csv", "a");
-    fprintf(csv, "Impl,File,Radius,Time 1,Time 2,Time 3,Time 4,Time 5,Average\n");
 
     for (const auto fileName : INPUTS) {
         char input_file_name[64];
