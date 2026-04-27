@@ -22,9 +22,9 @@ add_executable(proc_2d
 )
 target_link_libraries(proc_2d m)
 
-add_executable(proc_seq
-        src/proc_seq.cu
+add_executable(proc_sep
+        src/proc_sep.cu
         src/util.c
         src/util.h
 )
-target_link_libraries(proc_seq m)
+target_link_libraries(proc_sep m)
